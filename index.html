@@ -14,10 +14,10 @@
     <title>SMC - Calculadora de Optimización Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         
         body { 
-            background-color: #f8fafc; 
+            background-color: #f1f5f9; 
             font-family: 'Inter', sans-serif; 
             -webkit-print-color-adjust: exact; 
             overscroll-behavior-y: contain;
@@ -25,89 +25,93 @@
         
         .card { 
             background: white; 
-            border-radius: 1.5rem; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); 
+            border-radius: 1.25rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
 
         .tab-active {
             background-color: #3b82f6;
             color: white;
-            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .title-italic {
+            font-style: italic;
+            letter-spacing: -0.02em;
         }
 
         @media print {
             .no-print { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
-            .card { box-shadow: none !important; border: 1px solid #eee !important; width: 100% !important; border-radius: 0 !important; margin: 0 !important; }
-            .print-header { display: block !important; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+            .card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; width: 100% !important; border-radius: 0 !important; margin: 0 !important; }
+            .print-header { display: block !important; border-bottom: 4px solid #000; padding-bottom: 12px; margin-bottom: 24px; }
             .grid { display: block !important; }
-            .grid > div { margin-bottom: 15px !important; border: 1px solid #eee; padding: 15px; break-inside: avoid; }
-            .bg-slate-50, .bg-slate-900 { background-color: #f3f4f6 !important; color: black !important; }
+            .grid > div { margin-bottom: 20px !important; border: 1px solid #e2e8f0; padding: 20px; break-inside: avoid; }
+            .bg-slate-900 { background-color: #0f172a !important; color: white !important; }
         }
 
         .print-header { display: none; text-align: left; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-6 lg:p-10">
 
-    <!-- Cabecera para Impresión -->
+    <!-- Cabecera de Impresión -->
     <div class="print-header px-4">
-        <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 0;">SMC - SUMINISTROS MATERIALES CANARIAS</h1>
-        <p style="font-size: 14px; font-weight: 700; border-bottom: 1px solid #ddd; padding-bottom: 10px;">ORDEN DE CARGA / PICKING OPTIMIZADO</p>
-        <p id="print-date" style="font-size: 10px; color: #444; margin-top: 5px;"></p>
+        <h1 style="font-size: 28px; font-weight: 900; margin-bottom: 0;">SMC - SUMINISTROS MATERIALES CANARIAS</h1>
+        <p style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #64748b;">Orden de Carga y Lista de Picking Optimizado</p>
+        <p id="print-date" style="font-size: 11px; color: #94a3b8; margin-top: 6px;"></p>
     </div>
 
-    <div class="max-w-6xl mx-auto">
-        <!-- Banner App -->
-        <div class="flex items-center justify-between mb-8 bg-slate-900 text-white p-6 rounded-2xl shadow-xl border-b-4 border-blue-600 no-print">
+    <div class="max-w-7xl mx-auto">
+        <!-- Banner Superior Premium -->
+        <div class="flex items-center justify-between mb-8 bg-slate-900 text-white p-8 rounded-3xl shadow-2xl border-b-[6px] border-blue-600 no-print">
             <div>
-                <h1 class="text-2xl font-black tracking-tight uppercase">SMC CANARIAS</h1>
-                <p class="text-slate-400 text-[10px] uppercase tracking-widest font-bold italic">Logística de Almacén v3.0</p>
+                <h1 class="text-3xl font-black tracking-tighter uppercase leading-none">SMC CANARIAS</h1>
+                <p class="text-slate-400 text-[11px] uppercase tracking-[0.3em] font-bold mt-2">Logística de Almacén v3.0</p>
             </div>
-            <div class="text-right">
-                <span id="headerMode" class="text-blue-400 font-bold uppercase text-lg font-black tracking-tighter italic">Pared</span>
+            <div class="text-right flex flex-col items-end">
+                <span id="headerMode" class="bg-blue-600/20 text-blue-400 px-4 py-1 rounded-lg font-black uppercase text-sm italic tracking-widest border border-blue-500/30">Pared</span>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Panel de Configuración -->
+            <!-- Columna Izquierda: Configuración -->
             <div class="lg:col-span-4 space-y-6 no-print">
-                <div class="card p-6 border border-slate-200">
-                    <h2 class="text-xs font-black text-slate-800 uppercase mb-6 flex items-center tracking-widest">
-                        <span class="w-3 h-3 bg-blue-600 rounded-full mr-2"></span> Configuración
+                <div class="card p-8 border border-slate-200">
+                    <h2 class="text-sm font-black text-slate-900 uppercase mb-8 flex items-center tracking-widest">
+                        <span class="w-4 h-4 bg-blue-600 rounded-full mr-3 shadow-lg shadow-blue-500/40"></span> Configuración
                     </h2>
                     
-                    <div class="space-y-4">
-                        <!-- Selector de Tipo -->
+                    <div class="space-y-6">
+                        <!-- Tipo de Estantería -->
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Tipo de Estantería</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="setShelfType('pared')" id="btnPared" class="py-2 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs uppercase shadow-inner">Pared</button>
-                                <button onclick="setShelfType('gondola')" id="btnGondola" class="py-2 px-3 rounded-xl border-2 border-slate-200 text-slate-500 font-bold text-xs uppercase hover:bg-slate-50 transition-all">Góndola</button>
+                            <label class="block text-[11px] font-extrabold text-slate-500 uppercase mb-3 tracking-wider">Tipo de Estantería</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="setShelfType('pared')" id="btnPared" class="py-3 px-4 rounded-2xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-black text-xs uppercase transition-all">Pared</button>
+                                <button onclick="setShelfType('gondola')" id="btnGondola" class="py-3 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50 text-slate-400 font-black text-xs uppercase hover:bg-slate-100 transition-all">Góndola</button>
                             </div>
                         </div>
 
-                        <!-- Selector de Modo de Cálculo -->
-                        <div class="border-t pt-4">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Modo de Cálculo</label>
-                            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
-                                <button onclick="setCalcMode('auto')" id="tabAuto" class="py-2 rounded-lg text-[10px] font-black uppercase transition-all tab-active">Optimizar Pared</button>
-                                <button onclick="setCalcMode('manual')" id="tabManual" class="py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500">Elegir Módulo</button>
+                        <!-- Modo de Cálculo -->
+                        <div class="border-t border-slate-100 pt-6">
+                            <label class="block text-[11px] font-extrabold text-slate-500 uppercase mb-3 tracking-wider">Modo de Cálculo</label>
+                            <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl">
+                                <button onclick="setCalcMode('auto')" id="tabAuto" class="py-2.5 rounded-xl text-[10px] font-black uppercase transition-all tab-active">Optimizar Pared</button>
+                                <button onclick="setCalcMode('manual')" id="tabManual" class="py-2.5 rounded-xl text-[10px] font-black uppercase transition-all text-slate-500 hover:text-slate-700">Elegir Módulo</button>
                             </div>
                         </div>
 
-                        <!-- Input Dinámico: Largo de Pared (Auto) -->
-                        <div id="divAuto">
+                        <!-- Entrada Dinámica -->
+                        <div id="divAuto" class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Largo de la Pared (Metros)</label>
-                            <input type="number" id="totalMeters" value="9.4" step="0.01" oninput="calculate()" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 font-bold text-2xl outline-none transition-all">
+                            <input type="number" id="totalMeters" value="9.4" step="0.01" oninput="calculate()" class="w-full bg-transparent font-black text-4xl text-slate-900 outline-none placeholder-slate-300">
                         </div>
 
-                        <!-- Inputs Dinámicos: Módulo Específico (Manual) -->
-                        <div id="divManual" class="hidden space-y-4">
+                        <div id="divManual" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Elegir Ancho de Módulo</label>
-                                <select id="manualWidth" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none text-lg">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ancho de Módulo</label>
+                                <select id="manualWidth" onchange="calculate()" class="w-full bg-transparent font-black text-2xl text-slate-900 outline-none">
                                     <option value="120">120 cm</option>
                                     <option value="100">100 cm</option>
                                     <option value="90">90 cm</option>
@@ -115,15 +119,15 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Cantidad de Módulos</label>
-                                <input type="number" id="manualQty" value="1" min="1" oninput="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xl outline-none">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Cantidad</label>
+                                <input type="number" id="manualQty" value="1" min="1" oninput="calculate()" class="w-full bg-transparent font-black text-2xl text-slate-900 outline-none">
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 border-t pt-4">
+                        <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2 text-[9px]">Altura (cm)</label>
-                                <select id="postHeight" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none cursor-pointer">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Altura (cm)</label>
+                                <select id="postHeight" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl font-bold text-slate-700 outline-none">
                                     <option value="120">120 cm</option>
                                     <option value="150">150 cm</option>
                                     <option value="180">180 cm</option>
@@ -133,14 +137,14 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2 text-[9px]">Baldas x Cara</label>
-                                <input type="number" id="numShelves" value="4" min="1" oninput="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Baldas x Cara</label>
+                                <input type="number" id="numShelves" value="4" min="1" oninput="calculate()" class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl font-bold text-slate-700 outline-none text-center">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Fondo de Balda (cm)</label>
-                            <select id="shelfDepth" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none">
+                            <select id="shelfDepth" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl font-bold text-slate-700 outline-none">
                                 <option value="30">30 cm</option>
                                 <option value="40" selected>40 cm</option>
                                 <option value="50">50 cm</option>
@@ -149,76 +153,83 @@
                     </div>
                 </div>
 
-                <!-- Resumen de Diseño Sugerido -->
-                <div class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg no-print">
-                    <h3 class="font-bold text-xs uppercase opacity-80 mb-4 tracking-widest">Resumen de Módulos</h3>
-                    <div id="moduleBreakdown" class="space-y-3">
-                        <!-- Generado dinámicamente -->
+                <!-- Resumen de Optimización -->
+                <div class="bg-blue-600 text-white p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-3xl"></div>
+                    <h3 class="font-bold text-xs uppercase opacity-80 mb-6 tracking-widest">Optimización de Módulos</h3>
+                    <div id="moduleBreakdown" class="space-y-4">
+                        <!-- Dinámico -->
                     </div>
                 </div>
             </div>
 
-            <!-- Zona de Picking -->
-            <div class="lg:col-span-8 card p-8 border border-slate-200">
-                <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-4 no-print">
-                    <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter italic">Lista de Materiales</h2>
-                    <button onclick="handlePrint()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-xs font-black shadow-lg flex items-center">
-                        🖨️ IMPRIMIR / PDF
+            <!-- Columna Derecha: Lista de Picking -->
+            <div class="lg:col-span-8 card p-10 border border-slate-200">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 border-b border-slate-100 pb-8 no-print gap-6">
+                    <h2 class="text-3xl font-black text-slate-900 uppercase title-italic">Lista de Materiales</h2>
+                    <button onclick="handlePrint()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl text-xs font-black shadow-xl shadow-blue-500/20 transition-all active:scale-95 flex items-center justify-center gap-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        IMPRIMIR / PDF
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Postes -->
-                    <div class="flex justify-between items-center p-5 bg-slate-50 rounded-2xl border-l-8 border-blue-600 shadow-sm">
+                    <div class="flex justify-between items-center p-8 bg-slate-50 rounded-[2rem] border-l-[12px] border-blue-600 shadow-sm relative overflow-hidden">
                         <div>
-                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Postes Verticales</span>
-                            <span class="text-slate-700 font-bold" id="labelHeightPost">200 cm</span>
+                            <span class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 italic">Postes Verticales</span>
+                            <span class="text-slate-800 font-bold text-lg" id="labelHeightPost">200 cm</span>
                         </div>
-                        <span class="text-4xl font-black text-slate-900" id="pickPosts">0</span>
+                        <span class="text-7xl font-black text-slate-900 tracking-tighter" id="pickPosts">0</span>
                     </div>
 
-                    <!-- Baldas desglosadas -->
-                    <div class="md:col-span-2 bg-slate-50 p-6 rounded-3xl border border-slate-200">
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic text-center">Baldas Metálicas</h3>
-                        <div id="shelvesList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Baldas Seccionada -->
+                    <div class="md:col-span-2 bg-slate-50 p-8 rounded-[2rem] border border-slate-200">
+                        <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-6 text-center italic">Baldas Metálicas</h3>
+                        <div id="shelvesList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Dinámico -->
                         </div>
                     </div>
 
-                    <!-- Traseras por medida -->
-                    <div class="md:col-span-2 bg-slate-50 p-6 rounded-3xl border border-slate-200">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Paneles Traseros (Back Panels)</h3>
-                            <span id="badgeCara" class="text-[9px] font-bold bg-blue-100 text-blue-600 px-3 py-1 rounded-full uppercase">1 Cara</span>
+                    <!-- Traseras Seccionada -->
+                    <div class="md:col-span-2 bg-slate-50 p-8 rounded-[2rem] border border-slate-200 relative">
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest italic">Paneles Traseros (Back Panels)</h3>
+                            <span id="badgeCara" class="text-[10px] font-black bg-blue-100 text-blue-600 px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-sm">1 Cara</span>
                         </div>
-                        <div id="panelsList" class="space-y-4">
+                        <div id="panelsList" class="space-y-6">
                             <!-- Dinámico -->
                         </div>
                     </div>
 
-                    <!-- Componentes Auxiliares -->
-                    <div class="p-4 bg-white border border-slate-100 rounded-xl flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase italic">Brazos de Sujeción</span>
-                        <span class="text-2xl font-black text-slate-800" id="pickArms">0</span>
+                    <!-- Otros componentes en rejilla -->
+                    <div class="p-6 bg-white border border-slate-100 rounded-3xl flex justify-between items-center shadow-sm">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase italic tracking-tight">Brazos Sujeción</span>
+                        <span class="text-3xl font-black text-slate-900" id="pickArms">0</span>
                     </div>
-                    <div class="p-4 bg-white border border-slate-100 rounded-xl flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase italic">Zócalos (Plintos)</span>
-                        <span class="text-2xl font-black text-slate-800" id="pickZocalos">0</span>
+                    <div class="p-6 bg-white border border-slate-100 rounded-3xl flex justify-between items-center shadow-sm">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase italic tracking-tight">Zócalos</span>
+                        <span class="text-3xl font-black text-slate-900" id="pickZocalos">0</span>
                     </div>
-                    <div class="p-4 bg-white border border-slate-100 rounded-xl flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase italic">Topes (1 x Módulo)</span>
-                        <span class="text-2xl font-black text-slate-800" id="pickTopes">0</span>
+                    <div class="p-6 bg-white border border-slate-100 rounded-3xl flex justify-between items-center shadow-sm">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase italic tracking-tight text-[10px]">Topes (1/Mod)</span>
+                        <span class="text-3xl font-black text-slate-900" id="pickTopes">0</span>
                     </div>
-                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-bold text-blue-600 uppercase italic">Portaprecios</span>
-                        <span class="text-2xl font-black text-blue-800" id="pickPrices">0</span>
+                    <div class="p-6 bg-blue-50 border border-blue-100 rounded-3xl flex justify-between items-center shadow-sm">
+                        <span class="text-[11px] font-bold text-blue-600 uppercase italic tracking-tight">Portaprecios</span>
+                        <span class="text-3xl font-black text-blue-800" id="pickPrices">0</span>
                     </div>
                 </div>
 
-                <div class="mt-8 p-6 bg-slate-900 rounded-2xl text-slate-400">
-                    <p class="text-[11px] leading-relaxed italic">
-                        Lineal total: <span id="labelTotalLargo" class="text-blue-400 font-bold">0.00m</span>. 
-                        Altura neta paneles: <span id="labelNetHeight" class="text-blue-400 font-bold">185</span>cm (+15cm base).
+                <!-- Footer de información técnica -->
+                <div class="mt-10 p-8 bg-slate-900 rounded-[2rem] text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+                    <p class="text-[12px] leading-relaxed">
+                        <strong class="text-white uppercase text-[10px] block mb-1 tracking-widest opacity-60">Espacio Ocupado</strong>
+                        Lineal total: <span id="labelTotalLargo" class="text-blue-400 font-black text-lg">0.00m</span>
+                    </p>
+                    <p class="text-[12px] leading-relaxed">
+                        <strong class="text-white uppercase text-[10px] block mb-1 tracking-widest opacity-60">Altura Paneles</strong>
+                        Neta: <span id="labelNetHeight" class="text-blue-400 font-black text-lg">185</span>cm (+15cm base)
                     </p>
                 </div>
             </div>
@@ -227,7 +238,7 @@
 
     <script>
         let shelfType = 'pared';
-        let calcMode = 'auto'; // 'auto' o 'manual'
+        let calcMode = 'auto';
 
         function upd(id, val) { const el = document.getElementById(id); if (el) el.innerText = val; }
         
@@ -235,12 +246,12 @@
             shelfType = t;
             const bP = document.getElementById('btnPared');
             const bG = document.getElementById('btnGondola');
-            const active = "py-2 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs uppercase shadow-inner";
-            const inactive = "py-2 px-3 rounded-xl border-2 border-slate-200 text-slate-500 font-bold text-xs uppercase hover:bg-slate-50";
+            const active = "py-3 px-4 rounded-2xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-black text-xs uppercase shadow-inner shadow-blue-200/50 scale-105";
+            const inactive = "py-3 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50 text-slate-400 font-black text-xs uppercase hover:bg-slate-100";
 
             bP.className = (t==='pared') ? active : inactive;
             bG.className = (t==='gondola') ? active : inactive;
-            upd('headerMode', (t==='pared') ? "Estantería de Pared" : "Góndola Doble Cara");
+            upd('headerMode', (t==='pared') ? "Pared" : "Góndola");
             upd('badgeCara', (t==='pared') ? "1 Cara" : "Doble Cara");
             calculate();
         }
@@ -253,13 +264,13 @@
             const dManual = document.getElementById('divManual');
 
             if(mode === 'auto') {
-                tA.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all tab-active";
-                tM.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+                tA.className = "py-2.5 rounded-xl text-[10px] font-black uppercase transition-all tab-active";
+                tM.className = "py-2.5 rounded-xl text-[10px] font-black uppercase transition-all text-slate-500 hover:text-slate-700";
                 dAuto.classList.remove('hidden');
                 dManual.classList.add('hidden');
             } else {
-                tM.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all tab-active";
-                tA.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+                tM.className = "py-2.5 rounded-xl text-[10px] font-black uppercase transition-all tab-active";
+                tA.className = "py-2.5 rounded-xl text-[10px] font-black uppercase transition-all text-slate-500 hover:text-slate-700";
                 dManual.classList.remove('hidden');
                 dAuto.classList.add('hidden');
             }
@@ -282,19 +293,20 @@
                 const height = parseInt(document.getElementById('postHeight').value);
                 const sPerSide = parseInt(document.getElementById('numShelves').value) || 0;
                 const depth = document.getElementById('shelfDepth').value;
-                const multiplier = (shelfType === 'gondola') ? 2 : 1;
+                const mult = (shelfType === 'gondola') ? 2 : 1;
                 
                 let results = { 120: 0, 100: 0, 90: 0, 70: 0 };
                 let totalOccupiedCm = 0;
 
                 if (calcMode === 'auto') {
-                    let remaining = Math.floor((parseFloat(document.getElementById('totalMeters').value) || 0) * 100);
+                    let val = document.getElementById('totalMeters').value.replace(',', '.');
+                    let remaining = Math.floor((parseFloat(val) || 0) * 100);
                     const widths = [120, 100, 90, 70];
                     widths.forEach(w => {
                         results[w] = Math.floor(remaining / w);
                         remaining %= w;
                     });
-                    totalOccupiedCm = ((parseFloat(document.getElementById('totalMeters').value) || 0) * 100) - remaining;
+                    totalOccupiedCm = ((parseFloat(val) || 0) * 100) - remaining;
                 } else {
                     const selectedW = parseInt(document.getElementById('manualWidth').value);
                     const qty = parseInt(document.getElementById('manualQty').value) || 0;
@@ -312,13 +324,12 @@
                 [120, 100, 90, 70].forEach(w => {
                     if (results[w] > 0) {
                         breakdownEl.innerHTML += `
-                        <div class="flex justify-between border-b border-blue-400 pb-1">
-                            <span>${results[w]}x Módulo de ${w}cm</span>
-                            <span class="font-black">${(results[w]*w/100).toFixed(2)}m</span>
+                        <div class="flex justify-between border-b border-blue-400 pb-2 items-center">
+                            <span class="font-bold text-sm uppercase">${results[w]}x Módulo ${w}cm</span>
+                            <span class="font-black text-lg">${(results[w]*w/100).toFixed(2)}m</span>
                         </div>`;
                     }
                 });
-                if(totalModules === 0) breakdownEl.innerHTML = '<p class="text-xs opacity-60 italic">Indica cantidad o largo para calcular</p>';
 
                 // Picking: Postes
                 upd('pickPosts', posts);
@@ -330,12 +341,12 @@
                 let grandTotalS = 0;
                 [120, 100, 90, 70].forEach(w => {
                     if (results[w] > 0) {
-                        let qty = results[w] * sPerSide * multiplier;
+                        let qty = results[w] * sPerSide * mult;
                         grandTotalS += qty;
                         shelvesListEl.innerHTML += `
-                        <div class="bg-white p-3 rounded-xl border border-green-100 flex justify-between shadow-sm">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${w}x${depth} CM</span>
-                            <span class="font-black text-slate-800 text-lg">${qty}</span>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between shadow-sm items-center">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">${w}x${depth} CM</span>
+                            <span class="font-black text-slate-900 text-2xl">${qty}</span>
                         </div>`;
                     }
                 });
@@ -346,20 +357,20 @@
                 [120, 100, 90, 70].forEach(w => {
                     if (results[w] > 0) {
                         panelsListEl.innerHTML += `
-                        <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
-                            <h4 class="text-[9px] font-black text-blue-600 mb-3 uppercase tracking-tighter">Material para Módulos ${w}cm:</h4>
-                            <div class="grid grid-cols-3 gap-2 text-center">
-                                <div class="bg-slate-50 p-2 rounded-lg">
-                                    <span class="text-[8px] block text-slate-400 font-bold uppercase">H:30</span>
-                                    <span class="text-xl font-black text-slate-800">${pCombo.p30 * results[w] * multiplier}</span>
+                        <div class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm">
+                            <h4 class="text-[10px] font-black text-blue-600 mb-4 uppercase tracking-tighter italic">Material para Módulos de ${w}cm:</h4>
+                            <div class="grid grid-cols-3 gap-3 text-center">
+                                <div class="bg-slate-50 p-3 rounded-2xl">
+                                    <span class="text-[9px] block text-slate-400 font-black uppercase mb-1">H:30</span>
+                                    <span class="text-2xl font-black text-slate-900">${pCombo.p30 * results[w] * mult}</span>
                                 </div>
-                                <div class="bg-slate-50 p-2 rounded-lg">
-                                    <span class="text-[8px] block text-slate-400 font-bold uppercase">H:20</span>
-                                    <span class="text-xl font-black text-slate-800">${pCombo.p20 * results[w] * multiplier}</span>
+                                <div class="bg-slate-50 p-3 rounded-2xl">
+                                    <span class="text-[9px] block text-slate-400 font-black uppercase mb-1">H:20</span>
+                                    <span class="text-2xl font-black text-slate-900">${pCombo.p20 * results[w] * mult}</span>
                                 </div>
-                                <div class="bg-slate-50 p-2 rounded-lg">
-                                    <span class="text-[8px] block text-slate-400 font-bold uppercase">H:15</span>
-                                    <span class="text-xl font-black text-slate-800">${pCombo.p15 * results[w] * multiplier}</span>
+                                <div class="bg-slate-50 p-3 rounded-2xl">
+                                    <span class="text-[9px] block text-slate-400 font-black uppercase mb-1">H:15</span>
+                                    <span class="text-2xl font-black text-slate-900">${pCombo.p15 * results[w] * mult}</span>
                                 </div>
                             </div>
                         </div>`;
@@ -367,8 +378,8 @@
                 });
 
                 // Accesorios Globales
-                upd('pickArms', totalModules > 0 ? (totalModules * (sPerSide - 1) * 2 * multiplier) : 0);
-                upd('pickZocalos', totalModules * multiplier);
+                upd('pickArms', totalModules > 0 ? (totalModules * (sPerSide - 1) * 2 * mult) : 0);
+                upd('pickZocalos', totalModules * mult);
                 upd('pickTopes', totalModules);
                 upd('pickPrices', grandTotalS);
                 
@@ -376,13 +387,13 @@
                 upd('labelTotalLargo', (totalOccupiedCm / 100).toFixed(2) + "m");
                 upd('labelNetHeight', height - 15);
 
-            } catch (err) { console.error("Error en el cálculo automático", err); }
+            } catch (err) { console.error(err); }
         }
 
         function handlePrint() {
             const dateEl = document.getElementById('print-date');
-            if (dateEl) dateEl.innerText = "Fecha: " + new Date().toLocaleString();
-            setTimeout(() => { window.print(); }, 200);
+            if (dateEl) dateEl.innerText = "Fecha de Operación: " + new Date().toLocaleString();
+            setTimeout(() => { window.print(); }, 250);
         }
 
         window.onload = function() { calculate(); };
