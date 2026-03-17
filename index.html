@@ -2,7 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Configuración para Modo App (PWA) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SMC Almacén">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    
     <title>SMC - Calculadora de Optimización Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,6 +20,7 @@
             background-color: #f8fafc; 
             font-family: 'Inter', sans-serif; 
             -webkit-print-color-adjust: exact; 
+            overscroll-behavior-y: contain;
         }
         
         .card { 
@@ -20,7 +29,12 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); 
         }
 
-        /* ESTILOS ESPECÍFICOS PARA IMPRESIÓN */
+        .tab-active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
         @media print {
             .no-print { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
@@ -28,8 +42,7 @@
             .print-header { display: block !important; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
             .grid { display: block !important; }
             .grid > div { margin-bottom: 15px !important; border: 1px solid #eee; padding: 15px; break-inside: avoid; }
-            .bg-slate-50, .bg-slate-900 { background-color: #f3f4f6 !important; color: black !important; -webkit-print-color-adjust: exact; }
-            .text-white, .text-blue-400, .text-blue-600 { color: black !important; }
+            .bg-slate-50, .bg-slate-900 { background-color: #f3f4f6 !important; color: black !important; }
         }
 
         .print-header { display: none; text-align: left; }
@@ -37,7 +50,7 @@
 </head>
 <body class="p-4 md:p-8">
 
-    <!-- Cabecera de Impresión -->
+    <!-- Cabecera para Impresión -->
     <div class="print-header px-4">
         <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 0;">SMC - SUMINISTROS MATERIALES CANARIAS</h1>
         <p style="font-size: 14px; font-weight: 700; border-bottom: 1px solid #ddd; padding-bottom: 10px;">ORDEN DE CARGA / PICKING OPTIMIZADO</p>
@@ -49,10 +62,10 @@
         <div class="flex items-center justify-between mb-8 bg-slate-900 text-white p-6 rounded-2xl shadow-xl border-b-4 border-blue-600 no-print">
             <div>
                 <h1 class="text-2xl font-black tracking-tight uppercase">SMC CANARIAS</h1>
-                <p class="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Logística e Inventario Pro</p>
+                <p class="text-slate-400 text-[10px] uppercase tracking-widest font-bold italic">Logística de Almacén v3.0</p>
             </div>
             <div class="text-right">
-                <span id="headerMode" class="text-blue-400 font-bold uppercase text-lg font-black tracking-tighter">Estantería de Pared</span>
+                <span id="headerMode" class="text-blue-400 font-bold uppercase text-lg font-black tracking-tighter italic">Pared</span>
             </div>
         </div>
 
@@ -62,29 +75,54 @@
             <div class="lg:col-span-4 space-y-6 no-print">
                 <div class="card p-6 border border-slate-200">
                     <h2 class="text-xs font-black text-slate-800 uppercase mb-6 flex items-center tracking-widest">
-                        <span class="w-3 h-3 bg-blue-600 rounded-full mr-2"></span> Medidas del Espacio
+                        <span class="w-3 h-3 bg-blue-600 rounded-full mr-2"></span> Configuración
                     </h2>
                     
                     <div class="space-y-4">
-                        <!-- Tipo de Estantería -->
+                        <!-- Selector de Tipo -->
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Tipo de Estantería</label>
                             <div class="grid grid-cols-2 gap-2">
-                                <button onclick="setShelfType('pared')" id="btnPared" class="py-2 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs uppercase transition-all shadow-inner">Pared</button>
+                                <button onclick="setShelfType('pared')" id="btnPared" class="py-2 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs uppercase shadow-inner">Pared</button>
                                 <button onclick="setShelfType('gondola')" id="btnGondola" class="py-2 px-3 rounded-xl border-2 border-slate-200 text-slate-500 font-bold text-xs uppercase hover:bg-slate-50 transition-all">Góndola</button>
                             </div>
                         </div>
 
-                        <!-- Largo Pared -->
-                        <div>
+                        <!-- Selector de Modo de Cálculo -->
+                        <div class="border-t pt-4">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Modo de Cálculo</label>
+                            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+                                <button onclick="setCalcMode('auto')" id="tabAuto" class="py-2 rounded-lg text-[10px] font-black uppercase transition-all tab-active">Optimizar Pared</button>
+                                <button onclick="setCalcMode('manual')" id="tabManual" class="py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500">Elegir Módulo</button>
+                            </div>
+                        </div>
+
+                        <!-- Input Dinámico: Largo de Pared (Auto) -->
+                        <div id="divAuto">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Largo de la Pared (Metros)</label>
-                            <input type="number" id="totalMeters" value="9.4" step="0.01" oninput="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 font-bold text-2xl outline-none transition-all">
-                            <p class="text-[9px] text-slate-400 mt-2 italic font-medium">* El sistema optimiza usando módulos de 120, 100, 90 y 70 cm.</p>
+                            <input type="number" id="totalMeters" value="9.4" step="0.01" oninput="calculate()" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 font-bold text-2xl outline-none transition-all">
+                        </div>
+
+                        <!-- Inputs Dinámicos: Módulo Específico (Manual) -->
+                        <div id="divManual" class="hidden space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Elegir Ancho de Módulo</label>
+                                <select id="manualWidth" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none text-lg">
+                                    <option value="120">120 cm</option>
+                                    <option value="100">100 cm</option>
+                                    <option value="90">90 cm</option>
+                                    <option value="70">70 cm</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Cantidad de Módulos</label>
+                                <input type="number" id="manualQty" value="1" min="1" oninput="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xl outline-none">
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 border-t pt-4">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2 text-[9px]">Altura Poste</label>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2 text-[9px]">Altura (cm)</label>
                                 <select id="postHeight" onchange="calculate()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none cursor-pointer">
                                     <option value="120">120 cm</option>
                                     <option value="150">150 cm</option>
@@ -112,8 +150,8 @@
                 </div>
 
                 <!-- Resumen de Diseño Sugerido -->
-                <div class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg no-print transition-all">
-                    <h3 class="font-bold text-xs uppercase opacity-80 mb-4 tracking-widest">Diseño Sugerido</h3>
+                <div class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg no-print">
+                    <h3 class="font-bold text-xs uppercase opacity-80 mb-4 tracking-widest">Resumen de Módulos</h3>
                     <div id="moduleBreakdown" class="space-y-3">
                         <!-- Generado dinámicamente -->
                     </div>
@@ -123,8 +161,8 @@
             <!-- Zona de Picking -->
             <div class="lg:col-span-8 card p-8 border border-slate-200">
                 <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-4 no-print">
-                    <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter italic">Lista de Almacén</h2>
-                    <button onclick="handlePrint()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-xs font-black shadow-lg transition-all active:scale-95 flex items-center">
+                    <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter italic">Lista de Materiales</h2>
+                    <button onclick="handlePrint()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-xs font-black shadow-lg flex items-center">
                         🖨️ IMPRIMIR / PDF
                     </button>
                 </div>
@@ -133,15 +171,15 @@
                     <!-- Postes -->
                     <div class="flex justify-between items-center p-5 bg-slate-50 rounded-2xl border-l-8 border-blue-600 shadow-sm">
                         <div>
-                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Postes Verticales</span>
+                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Postes Verticales</span>
                             <span class="text-slate-700 font-bold" id="labelHeightPost">200 cm</span>
                         </div>
                         <span class="text-4xl font-black text-slate-900" id="pickPosts">0</span>
                     </div>
 
-                    <!-- Baldas por medida -->
+                    <!-- Baldas desglosadas -->
                     <div class="md:col-span-2 bg-slate-50 p-6 rounded-3xl border border-slate-200">
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic">Baldas Metálicas</h3>
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic text-center">Baldas Metálicas</h3>
                         <div id="shelvesList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <!-- Dinámico -->
                         </div>
@@ -173,16 +211,14 @@
                     </div>
                     <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl flex justify-between items-center shadow-sm">
                         <span class="text-[10px] font-bold text-blue-600 uppercase italic">Portaprecios</span>
-                        <span class="text-2xl font-black text-blue-700" id="pickPrices">0</span>
+                        <span class="text-2xl font-black text-blue-800" id="pickPrices">0</span>
                     </div>
                 </div>
 
                 <div class="mt-8 p-6 bg-slate-900 rounded-2xl text-slate-400">
-                    <p class="text-[11px] leading-relaxed">
-                        <strong class="text-white uppercase block mb-1 text-xs tracking-wider font-black">Información Técnica:</strong>
-                        Lineal total ocupado: <span id="labelTotalLargo" class="text-blue-400 font-bold">0.00m</span>. 
+                    <p class="text-[11px] leading-relaxed italic">
+                        Lineal total: <span id="labelTotalLargo" class="text-blue-400 font-bold">0.00m</span>. 
                         Altura neta paneles: <span id="labelNetHeight" class="text-blue-400 font-bold">185</span>cm (+15cm base).
-                        * La balda inferior descansa sobre la base del poste.
                     </p>
                 </div>
             </div>
@@ -191,6 +227,7 @@
 
     <script>
         let shelfType = 'pared';
+        let calcMode = 'auto'; // 'auto' o 'manual'
 
         function upd(id, val) { const el = document.getElementById(id); if (el) el.innerText = val; }
         
@@ -198,8 +235,8 @@
             shelfType = t;
             const bP = document.getElementById('btnPared');
             const bG = document.getElementById('btnGondola');
-            const active = "py-2 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs uppercase transition-all shadow-inner";
-            const inactive = "py-2 px-3 rounded-xl border-2 border-slate-200 text-slate-500 font-bold text-xs uppercase hover:bg-slate-50 transition-all";
+            const active = "py-2 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 font-bold text-xs uppercase shadow-inner";
+            const inactive = "py-2 px-3 rounded-xl border-2 border-slate-200 text-slate-500 font-bold text-xs uppercase hover:bg-slate-50";
 
             bP.className = (t==='pared') ? active : inactive;
             bG.className = (t==='gondola') ? active : inactive;
@@ -208,38 +245,62 @@
             calculate();
         }
 
+        function setCalcMode(mode) {
+            calcMode = mode;
+            const tA = document.getElementById('tabAuto');
+            const tM = document.getElementById('tabManual');
+            const dAuto = document.getElementById('divAuto');
+            const dManual = document.getElementById('divManual');
+
+            if(mode === 'auto') {
+                tA.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all tab-active";
+                tM.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+                dAuto.classList.remove('hidden');
+                dManual.classList.add('hidden');
+            } else {
+                tM.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all tab-active";
+                tA.className = "py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+                dManual.classList.remove('hidden');
+                dAuto.classList.add('hidden');
+            }
+            calculate();
+        }
+
         function getPanelCombo(targetH) {
             let h = targetH - 15;
-            let p30 = Math.floor(h / 30);
+            let p30 = Math.floor(h / 30); let rem = h % 30;
             let p20 = 0, p15 = 0;
-            let rem = h % 30;
-
-            if (rem === 15) p15 = 1;
-            else if (rem === 20) p20 = 1;
+            if (rem === 15) p15 = 1; else if (rem === 20) p20 = 1;
             else if (rem === 5 && p30 > 0) { p30--; p20 = 1; p15 = 1; }
             else if (rem === 10 && p30 > 0) { p30--; p20 = 2; }
             else if (rem === 25 && p30 > 0) { p30--; p20 = 2; p15 = 1; }
-
             return { p30, p20, p15 };
         }
 
         function calculate() {
             try {
-                const totalCm = (parseFloat(document.getElementById('totalMeters').value) || 0) * 100;
                 const height = parseInt(document.getElementById('postHeight').value);
-                const shelvesPerSide = parseInt(document.getElementById('numShelves').value) || 0;
+                const sPerSide = parseInt(document.getElementById('numShelves').value) || 0;
                 const depth = document.getElementById('shelfDepth').value;
                 const multiplier = (shelfType === 'gondola') ? 2 : 1;
-
-                // ALGORITMO TETRIS
-                let remaining = Math.floor(totalCm);
-                const widths = [120, 100, 90, 70];
-                let results = { 120: 0, 100: 0, 90: 0, 70: 0 };
                 
-                widths.forEach(w => {
-                    results[w] = Math.floor(remaining / w);
-                    remaining %= w;
-                });
+                let results = { 120: 0, 100: 0, 90: 0, 70: 0 };
+                let totalOccupiedCm = 0;
+
+                if (calcMode === 'auto') {
+                    let remaining = Math.floor((parseFloat(document.getElementById('totalMeters').value) || 0) * 100);
+                    const widths = [120, 100, 90, 70];
+                    widths.forEach(w => {
+                        results[w] = Math.floor(remaining / w);
+                        remaining %= w;
+                    });
+                    totalOccupiedCm = ((parseFloat(document.getElementById('totalMeters').value) || 0) * 100) - remaining;
+                } else {
+                    const selectedW = parseInt(document.getElementById('manualWidth').value);
+                    const qty = parseInt(document.getElementById('manualQty').value) || 0;
+                    results[selectedW] = qty;
+                    totalOccupiedCm = selectedW * qty;
+                }
 
                 const totalModules = Object.values(results).reduce((a, b) => a + b, 0);
                 const posts = totalModules > 0 ? totalModules + 1 : 0;
@@ -248,16 +309,16 @@
                 // UI: Desglose Sugerido
                 const breakdownEl = document.getElementById('moduleBreakdown');
                 breakdownEl.innerHTML = '';
-                widths.forEach(w => {
+                [120, 100, 90, 70].forEach(w => {
                     if (results[w] > 0) {
                         breakdownEl.innerHTML += `
                         <div class="flex justify-between border-b border-blue-400 pb-1">
-                            <span>${results[w]}x Módulo ${w}cm</span>
-                            <span class="font-black text-sm">${(results[w]*w/100).toFixed(2)}m</span>
+                            <span>${results[w]}x Módulo de ${w}cm</span>
+                            <span class="font-black">${(results[w]*w/100).toFixed(2)}m</span>
                         </div>`;
                     }
                 });
-                if(totalModules === 0) breakdownEl.innerHTML = '<p class="text-xs opacity-60">Indica un largo válido</p>';
+                if(totalModules === 0) breakdownEl.innerHTML = '<p class="text-xs opacity-60 italic">Indica cantidad o largo para calcular</p>';
 
                 // Picking: Postes
                 upd('pickPosts', posts);
@@ -266,11 +327,11 @@
                 // Picking: Baldas por Medida
                 const shelvesListEl = document.getElementById('shelvesList');
                 shelvesListEl.innerHTML = '';
-                let grandTotalShelves = 0;
-                widths.forEach(w => {
+                let grandTotalS = 0;
+                [120, 100, 90, 70].forEach(w => {
                     if (results[w] > 0) {
-                        let qty = results[w] * shelvesPerSide * multiplier;
-                        grandTotalShelves += qty;
+                        let qty = results[w] * sPerSide * multiplier;
+                        grandTotalS += qty;
                         shelvesListEl.innerHTML += `
                         <div class="bg-white p-3 rounded-xl border border-green-100 flex justify-between shadow-sm">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${w}x${depth} CM</span>
@@ -282,11 +343,11 @@
                 // Picking: Paneles por Medida
                 const panelsListEl = document.getElementById('panelsList');
                 panelsListEl.innerHTML = '';
-                widths.forEach(w => {
+                [120, 100, 90, 70].forEach(w => {
                     if (results[w] > 0) {
                         panelsListEl.innerHTML += `
                         <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
-                            <h4 class="text-[9px] font-black text-blue-600 mb-3 uppercase">Para Módulos de ${w}cm:</h4>
+                            <h4 class="text-[9px] font-black text-blue-600 mb-3 uppercase tracking-tighter">Material para Módulos ${w}cm:</h4>
                             <div class="grid grid-cols-3 gap-2 text-center">
                                 <div class="bg-slate-50 p-2 rounded-lg">
                                     <span class="text-[8px] block text-slate-400 font-bold uppercase">H:30</span>
@@ -306,14 +367,13 @@
                 });
 
                 // Accesorios Globales
-                upd('pickArms', totalModules > 0 ? (totalModules * (shelvesPerSide - 1) * 2 * multiplier) : 0);
+                upd('pickArms', totalModules > 0 ? (totalModules * (sPerSide - 1) * 2 * multiplier) : 0);
                 upd('pickZocalos', totalModules * multiplier);
                 upd('pickTopes', totalModules);
-                upd('pickPrices', grandTotalShelves);
+                upd('pickPrices', grandTotalS);
                 
-                // Resumen Técnico
-                const occupiedMeters = ((totalCm - remaining) / 100).toFixed(2);
-                upd('labelTotalLargo', occupiedMeters + "m");
+                // Info técnica
+                upd('labelTotalLargo', (totalOccupiedCm / 100).toFixed(2) + "m");
                 upd('labelNetHeight', height - 15);
 
             } catch (err) { console.error("Error en el cálculo automático", err); }
@@ -321,14 +381,11 @@
 
         function handlePrint() {
             const dateEl = document.getElementById('print-date');
-            if (dateEl) dateEl.innerText = "Fecha de generación: " + new Date().toLocaleString();
+            if (dateEl) dateEl.innerText = "Fecha: " + new Date().toLocaleString();
             setTimeout(() => { window.print(); }, 200);
         }
 
-        window.onload = function() {
-            calculate();
-        };
+        window.onload = function() { calculate(); };
     </script>
 </body>
 </html>
-
